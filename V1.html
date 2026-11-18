@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Cruise Loyalty Analytics V9 | Independent Financial Modeling Case Study</title><style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17212c;background:#f7f8fa}
+*{box-sizing:border-box}body{margin:0}
+header{background:#fff;color:#17212c;padding:19px max(28px,calc((100vw - 1280px)/2));display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid #e4e7eb}
+header h1{font-size:20px;font-weight:700;letter-spacing:-.5px;margin:6px 0 4px}
+header p{margin:0;color:#697585;font-size:12px}
+.brand{display:flex;align-items:center;gap:14px}
+.official-logo{width:185px;max-height:60px;object-fit:contain;object-position:left center;flex-shrink:0}
+.brand-name{font-size:21px;letter-spacing:-.9px;font-weight:800;color:#14385b;line-height:1}
+.brand-name small{font-size:9px;font-weight:700;letter-spacing:2.2px;color:#687586;display:block;margin-top:5px}
+.brand-divider{height:38px;border-left:1px solid #d9dfe5;margin:0 4px}
+.pill{border:1px solid #dfe4e9;border-radius:4px;padding:8px 10px;font-size:11px;white-space:nowrap;color:#647181;background:#f8f9fb}
+main{max-width:1280px;margin:auto;padding:30px 24px}
+.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}
+.intro h2{font-size:23px;letter-spacing:-.6px;margin:0 0 7px}
+.muted{color:#6d7988;font-size:12px}
+.layout{display:grid;grid-template-columns:292px minmax(0,1fr);gap:18px}
+.panel,.metric{background:white;border:1px solid #e3e7eb;border-radius:6px;box-shadow:none}
+.panel{padding:22px;margin-bottom:18px}
+.panel h3{font-size:14px;margin:0 0 17px;font-weight:700;color:#263444}
+.control{margin-bottom:20px}
+.control label{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:600}
+.control output{color:#123e68}
+input[type=range]{width:100%;accent-color:#123e68;margin-top:12px}
+.range{display:flex;justify-content:space-between;color:#8a95a1;font-size:10px}
+button{cursor:pointer;border:1px solid #123e68;background:#123e68;color:white;border-radius:4px;padding:10px 13px;font-size:12px;font-weight:700}
+button.secondary{background:white;border:1px solid #cbd4dd;color:#263444}
+button:hover{filter:brightness(.95)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.metric{padding:19px 16px;border-top:3px solid #173e66}
+.metric small{color:#6d7988;font-size:11px;line-height:1.4}
+.metric strong{display:block;font-size:24px;letter-spacing:-.8px;margin:11px 0 8px;font-variant-numeric:tabular-nums}
+.metric span{color:#7a8794;font-size:10px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.legend{display:flex;gap:14px;font-size:11px;color:#697585;flex-wrap:wrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;background:#173e66}
+.dot.alt{background:#aab4be}
+.chart{width:100%;height:285px;display:block}
+.note{font-size:11px;color:#74808d;line-height:1.65}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:11px;white-space:nowrap}
+th,td{text-align:right;padding:11px 9px;border-bottom:1px solid #edf0f2;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{background:#f8f9fb;color:#637181;font-weight:700}
+tr:hover td{background:#f7f9fb}
+.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.comparison>div{background:#f8f9fb;border:1px solid #e7eaee;border-radius:4px;padding:15px}
+.comparison small{display:block;color:#73808d;font-size:11px}
+.comparison strong{font-size:18px;display:block;margin:8px 0}
+.pos{color:#18744c}.neg{color:#b34c46}
+.footer{font-size:11px;line-height:1.75;color:#75818d;padding-bottom:24px}
+.highlight{color:#173e66;font-weight:700}
+.segment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.segment-card{background:#fafbfc;border:1px solid #e4e8ec;border-radius:4px;padding:16px}
+.segment-card strong{display:block;font-size:13px}
+.segment-card small{display:block;color:#768390;font-size:11px;margin-top:9px}
+.season-toggle{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;margin:4px 0 20px}
+.season-toggle input{accent-color:#173e66;width:15px;height:15px}
+.eyebrow{font-size:10px;letter-spacing:1.6px;color:#9b3744;font-weight:800;text-transform:uppercase}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:550px){.segment-grid{grid-template-columns:1fr}header{display:block}.pill{display:inline-block;margin-top:12px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:20px}.comparison{grid-template-columns:1fr}.intro{display:block}.brand{flex-wrap:wrap}}
+
+/* Presentation-size typography and compact forecast drill-down */
+body{font-size:15px}header h1{font-size:24px}header p,.muted,.note,.footer{font-size:13px}.intro h2{font-size:27px}.panel h3{font-size:17px}.control label,.season-toggle{font-size:14px}.control output{font-size:15px}.metric small,.metric span,.segment-card small,.comparison small{font-size:13px}.metric strong{font-size:27px}.segment-card strong{font-size:16px}button{font-size:13px}th,td{font-size:13px;padding:10px 9px}.chart{height:300px} .compact-bar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:16px 0 10px}.compact-stats{display:flex;gap:20px;flex-wrap:wrap}.compact-stats span{font-size:13px;color:#677382}.compact-stats b{color:#21384d;font-size:17px;display:block;margin-top:3px}.drilldown{margin-top:10px;border-top:1px solid #e5e9ed;padding-top:12px}.drilldown summary{cursor:pointer;font-weight:700;color:#173e66;font-size:14px;padding:9px 0}.drilldown summary:hover{text-decoration:underline}.accuracy-scroll{max-height:310px;overflow:auto}.accuracy-scroll thead{position:sticky;top:0;z-index:1}.segment-accuracy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}.segment-accuracy-card{border:1px solid #e3e7eb;border-radius:5px;padding:14px;background:#fafbfc}.segment-accuracy-card h4{margin:0 0 9px;font-size:15px}.segment-accuracy-card label{display:block;color:#697585;font-size:12px;margin:9px 0 5px}.segment-accuracy-card input{width:100%;padding:8px;border:1px solid #ccd5de;border-radius:4px;font-size:14px}.segment-accuracy-card .result{margin-top:12px;font-size:13px;line-height:1.6}.small-actions{display:flex;gap:8px;flex-wrap:wrap}.small-actions button{padding:7px 10px}.table-wrap input{font-size:13px!important}@media(max-width:650px){.segment-accuracy{grid-template-columns:1fr}.compact-stats{gap:12px}}
+
+/* Executive application layout */
+body{font-size:15px;line-height:1.5}.view-tabs{display:flex;gap:0;border-bottom:1px solid #dce3e9;margin-bottom:20px;overflow-x:auto}.view-tab{background:transparent!important;border:0!important;border-bottom:3px solid transparent!important;border-radius:0!important;color:#586574!important;padding:15px 20px!important;font-size:14px!important;white-space:nowrap}.view-tab.active{border-bottom-color:#173e66!important;color:#173e66!important}.dashboard-view{display:none}.dashboard-view.active{display:block}.panel h3{font-size:17px}.muted,.note{font-size:13px}.metric small{font-size:13px}.metric strong{font-size:27px}.metric span{font-size:12px}table{font-size:13px}th,td{padding:12px 10px}.control label{font-size:14px}.control output{font-size:14px}.segment-card strong{font-size:15px}.segment-card small{font-size:13px}.insight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.insight{border-left:3px solid #173e66;background:#f7f9fb;padding:14px 16px;font-size:13px;color:#4a5663}.insight strong{display:block;color:#203246;font-size:14px;margin-bottom:6px}.waterfall{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:end;padding:12px 0}.wf-item{min-width:0;border:1px solid #e0e6eb;border-radius:4px;padding:15px 12px}.wf-item small{font-size:12px;color:#657483;display:block}.wf-item strong{font-size:23px;color:#173e66;display:block;margin:8px 0}.wf-bar{height:8px;background:#173e66;border-radius:2px}.wf-item.negative .wf-bar{background:#b85a61}.wf-item.positive .wf-bar{background:#4e8478}.wf-item.negative strong{color:#b04c56}@media(max-width:720px){.insight-grid{grid-template-columns:1fr}.waterfall{grid-template-columns:repeat(2,1fr)}.view-tab{padding:12px 10px!important;font-size:12px!important}}
+/* V12: decision-first layout */
+.kpi-ribbon{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi-tile{border-radius:17px;padding:20px 18px;background:linear-gradient(145deg,#fff,#f8fbfd);box-shadow:0 5px 22px rgba(21,48,76,.07)}
+.kpi-tile .kpi-name{font-size:13px}.kpi-tile .kpi-number{font-size:clamp(22px,2vw,31px)}
+.kpi-tile .kpi-detail{font-size:12px;line-height:1.5}.kpi-tile.good{background:linear-gradient(135deg,#fff,#edf9f3)}.kpi-tile.bad{background:linear-gradient(135deg,#fff,#fff0f1)}
+.v12-lead{font-size:14px;color:#607488;margin:4px 0 16px;line-height:1.6}
+.v12-seg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.v12-seg{background:white;border:1px solid #dce5ed;border-radius:16px;padding:21px;box-shadow:0 5px 16px #193b580b}
+.v12-seg h4{font-size:16px;margin:0 0 5px;color:#193c5b}.v12-seg .big{font-size:28px;font-weight:800;color:#173e66;margin:9px 0}
+.v12-seg .mutedline{font-size:12px;color:#64788c;margin:7px 0}.v12-bar{height:8px;border-radius:8px;background:#e9eff5;overflow:hidden;margin:14px 0}.v12-bar i{display:block;height:100%;background:#c52a43;border-radius:8px}
+.v12-financial-lead{font-size:14px;color:#526b80;margin-bottom:12px}
+#view-financial>.panel:first-of-type{border:2px solid #c9d8e5;box-shadow:0 8px 28px #193b5812}
+@media(max-width:1100px){.kpi-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:750px){.v12-seg-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.kpi-ribbon{grid-template-columns:1fr}}
+</style><style>.season-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:16px 0}.season-cell{display:flex;flex-direction:column;gap:6px;padding:12px;background:#f8fafb;border:1px solid #e4e9ed;border-radius:5px;font-size:13px;font-weight:700;color:#233a51}.season-cell input{width:100%;min-width:0;border:1px solid #c9d2dc;border-radius:4px;padding:8px 5px;font:inherit;font-size:15px;background:white;color:#173e66}.season-cell small{font-size:11px;color:#758392;font-weight:400}@media(max-width:900px){.season-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:550px){.season-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* V12: decision-first layout */
+.kpi-ribbon{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi-tile{border-radius:17px;padding:20px 18px;background:linear-gradient(145deg,#fff,#f8fbfd);box-shadow:0 5px 22px rgba(21,48,76,.07)}
+.kpi-tile .kpi-name{font-size:13px}.kpi-tile .kpi-number{font-size:clamp(22px,2vw,31px)}
+.kpi-tile .kpi-detail{font-size:12px;line-height:1.5}.kpi-tile.good{background:linear-gradient(135deg,#fff,#edf9f3)}.kpi-tile.bad{background:linear-gradient(135deg,#fff,#fff0f1)}
+.v12-lead{font-size:14px;color:#607488;margin:4px 0 16px;line-height:1.6}
+.v12-seg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.v12-seg{background:white;border:1px solid #dce5ed;border-radius:16px;padding:21px;box-shadow:0 5px 16px #193b580b}
+.v12-seg h4{font-size:16px;margin:0 0 5px;color:#193c5b}.v12-seg .big{font-size:28px;font-weight:800;color:#173e66;margin:9px 0}
+.v12-seg .mutedline{font-size:12px;color:#64788c;margin:7px 0}.v12-bar{height:8px;border-radius:8px;background:#e9eff5;overflow:hidden;margin:14px 0}.v12-bar i{display:block;height:100%;background:#c52a43;border-radius:8px}
+.v12-financial-lead{font-size:14px;color:#526b80;margin-bottom:12px}
+#view-financial>.panel:first-of-type{border:2px solid #c9d8e5;box-shadow:0 8px 28px #193b5812}
+@media(max-width:1100px){.kpi-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:750px){.v12-seg-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.kpi-ribbon{grid-template-columns:1fr}}
+</style><style>
+:root{--ink:#152a3d;--navy:#123755;--accent:#b91e36;--edge:#e2e8ef;--bg:#f3f6f9;--muted:#65778a}
+body{background:var(--bg)!important;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;font-size:15px!important;line-height:1.55}
+main{max-width:1540px!important}header{box-shadow:0 1px 8px #112c4210}header h1{letter-spacing:-.5px}
+.panel,.metric,.segment-card,.comparison{border-radius:13px!important;border:1px solid var(--edge)!important;box-shadow:0 4px 18px #16364d08!important;background:#fff}
+.panel{padding:22px!important}.panel h3{letter-spacing:-.25px}.intro{margin-bottom:22px}.intro h2{font-size:31px!important;letter-spacing:-.9px}
+.view-tabs{background:#fff;border:1px solid var(--edge)!important;border-radius:12px;padding:5px;gap:4px!important;position:sticky;top:8px;z-index:4;box-shadow:0 4px 16px #142b3c0b}
+.view-tab{border:0!important;border-radius:8px!important;padding:13px 15px!important;font-weight:650!important;transition:background .18s,color .18s}
+.view-tab.active{background:#173e66!important;color:#fff!important;border:0!important}.view-tab:hover:not(.active){background:#edf2f7!important}
+button{border-radius:8px!important;font-weight:650;cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #d84b6180;outline-offset:2px}
+.metric strong{font-size:29px!important}.note{line-height:1.65!important}.chart{height:320px!important}th{background:#f7f9fb;color:#41566a}
+.eyebrow{color:#a6263c;font-size:11px;font-weight:800;letter-spacing:1.6px}.roi-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:5px 0 22px}.roi-heading h2{font-size:28px;letter-spacing:-.8px;margin:5px 0 8px}.roi-heading p{color:#65778a;margin:0;max-width:760px}.roi-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.roi-kpi{padding:20px;background:#fff;border:1px solid var(--edge);border-radius:13px;box-shadow:0 4px 18px #16364d08;min-width:0}.roi-kpi small{color:#607488;font-size:12px;font-weight:650;display:block;min-height:36px}.roi-kpi strong{display:block;font-size:28px;letter-spacing:-1px;margin:9px 0 5px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.roi-kpi span{color:#738397;font-size:12px}.roi-kpi .negative{color:#b4233e}.roi-kpi .positive{color:#15715b}.roi-layout{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.15fr);gap:16px;margin-bottom:16px}.roi-layout .panel{margin:0}.roi-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}.roi-control{background:#f7f9fb;border:1px solid #e8edf2;border-radius:9px;padding:12px}.roi-control label{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#44586d;font-weight:650}.roi-control output{font-weight:800;color:#123755;white-space:nowrap}.roi-control input{width:100%;margin:14px 0 3px;accent-color:#b91e36}.tag{background:#f2f5f8;color:#52667a;font-size:11px;border-radius:20px;padding:5px 10px}.roi-bridge{display:grid;gap:18px;margin:20px 0}.bridge-item .bridge-label{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:650;margin-bottom:7px}.bridge-track{background:#edf1f5;height:15px;border-radius:7px;overflow:hidden}.bridge-fill{height:100%;background:#173e66;border-radius:7px;min-width:2px}.bridge-fill.cost{background:#c04c60}.bridge-fill.net{background:#22816d}.bridge-fill.loss{background:#b4233e}.roi-break{border-top:1px solid var(--edge);padding-top:17px;font-size:14px;color:#40566b}.roi-break b{color:#173e66}.roi-segments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.roi-segment{border:1px solid #e2e9f0;border-radius:11px;padding:18px;background:#fafcfe}.roi-segment h4{margin:0 0 4px;font-size:16px}.roi-segment .roi-seg-number{font-size:24px;font-weight:800;letter-spacing:-.5px;margin:10px 0}.roi-segment p{margin:5px 0;font-size:13px;color:#65778a}.roi-segment .roi-mini-track{height:7px;border-radius:6px;background:#e9eff4;overflow:hidden;margin-top:14px}.roi-segment .roi-mini-fill{height:100%;background:#173e66}.sensitivity-chart{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:18px 0 12px}.sensitivity-cell{padding:12px 6px;text-align:center;background:#f1f5f9;border:1px solid #e4eaf0;border-radius:9px}.sensitivity-cell.positive{background:#eaf6f1;border-color:#cbe8da}.sensitivity-cell.negative{background:#fff0f1;border-color:#f3d6dc}.sensitivity-cell strong{font-size:16px;display:block;margin:7px 0}.sensitivity-cell small{color:#6b7d8e}.methodology{margin-top:16px}.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.method-grid>div{padding:14px;background:#f8fafc;border-radius:9px}.method-grid p{font-size:13px;color:#617487;margin:8px 0 0}
+@media(max-width:1050px){.roi-kpis{grid-template-columns:repeat(2,1fr)}.roi-layout{grid-template-columns:1fr}.roi-segments{grid-template-columns:1fr 1fr}.method-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.roi-heading{align-items:flex-start;flex-direction:column}.roi-kpis,.roi-controls,.roi-segments{grid-template-columns:1fr}.sensitivity-chart{grid-template-columns:repeat(3,1fr)}.roi-kpi small{min-height:0}.panel{padding:16px!important}}
+
+/* V12: decision-first layout */
+.kpi-ribbon{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi-tile{border-radius:17px;padding:20px 18px;background:linear-gradient(145deg,#fff,#f8fbfd);box-shadow:0 5px 22px rgba(21,48,76,.07)}
+.kpi-tile .kpi-name{font-size:13px}.kpi-tile .kpi-number{font-size:clamp(22px,2vw,31px)}
+.kpi-tile .kpi-detail{font-size:12px;line-height:1.5}.kpi-tile.good{background:linear-gradient(135deg,#fff,#edf9f3)}.kpi-tile.bad{background:linear-gradient(135deg,#fff,#fff0f1)}
+.v12-lead{font-size:14px;color:#607488;margin:4px 0 16px;line-height:1.6}
+.v12-seg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.v12-seg{background:white;border:1px solid #dce5ed;border-radius:16px;padding:21px;box-shadow:0 5px 16px #193b580b}
+.v12-seg h4{font-size:16px;margin:0 0 5px;color:#193c5b}.v12-seg .big{font-size:28px;font-weight:800;color:#173e66;margin:9px 0}
+.v12-seg .mutedline{font-size:12px;color:#64788c;margin:7px 0}.v12-bar{height:8px;border-radius:8px;background:#e9eff5;overflow:hidden;margin:14px 0}.v12-bar i{display:block;height:100%;background:#c52a43;border-radius:8px}
+.v12-financial-lead{font-size:14px;color:#526b80;margin-bottom:12px}
+#view-financial>.panel:first-of-type{border:2px solid #c9d8e5;box-shadow:0 8px 28px #193b5812}
+@media(max-width:1100px){.kpi-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:750px){.v12-seg-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.kpi-ribbon{grid-template-columns:1fr}}
+</style><style>
+/* V9: decision-first KPI ribbons */
+.dashboard-view{--good:#13765b;--bad:#bb3447;--neutral:#42617f}
+.kpi-ribbon{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 0 18px}
+.kpi-tile{background:#fff;border:1px solid #e0e8ef;border-radius:15px;padding:17px 18px;box-shadow:0 6px 18px #193b580b;min-width:0;position:relative;overflow:hidden}
+.kpi-tile:before{content:'';position:absolute;inset:0 auto 0 0;width:5px;background:#8da2b7}
+.kpi-tile.good:before{background:var(--good)}.kpi-tile.bad:before{background:var(--bad)}.kpi-tile.neutral:before{background:#6688a8}
+.kpi-tile .kpi-name{font-size:12px;font-weight:700;color:#5b6f81;line-height:1.4}
+.kpi-tile .kpi-number{font-size:clamp(22px,2.2vw,32px);font-weight:800;letter-spacing:-.8px;color:#183b59;margin:8px 0 7px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kpi-tile .kpi-chip{display:inline-flex;align-items:center;border-radius:100px;padding:4px 9px;font-size:11px;font-weight:800;background:#eff3f7;color:#45617a}
+.kpi-tile.good .kpi-chip{background:#e7f5ef;color:#116c50}.kpi-tile.bad .kpi-chip{background:#fcebef;color:#ad2c42}
+.kpi-tile .kpi-detail{font-size:11px;color:#788899;margin-top:9px;line-height:1.45}
+.kpi-legend{font-size:12px;color:#65798a;margin:-8px 0 16px}
+#view-overview>.metrics,#view-roi>.roi-kpis{display:none}
+@media(max-width:1000px){.kpi-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.kpi-ribbon{grid-template-columns:1fr}.kpi-tile{padding:15px}}
+
+/* V12: decision-first layout */
+.kpi-ribbon{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi-tile{border-radius:17px;padding:20px 18px;background:linear-gradient(145deg,#fff,#f8fbfd);box-shadow:0 5px 22px rgba(21,48,76,.07)}
+.kpi-tile .kpi-name{font-size:13px}.kpi-tile .kpi-number{font-size:clamp(22px,2vw,31px)}
+.kpi-tile .kpi-detail{font-size:12px;line-height:1.5}.kpi-tile.good{background:linear-gradient(135deg,#fff,#edf9f3)}.kpi-tile.bad{background:linear-gradient(135deg,#fff,#fff0f1)}
+.v12-lead{font-size:14px;color:#607488;margin:4px 0 16px;line-height:1.6}
+.v12-seg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.v12-seg{background:white;border:1px solid #dce5ed;border-radius:16px;padding:21px;box-shadow:0 5px 16px #193b580b}
+.v12-seg h4{font-size:16px;margin:0 0 5px;color:#193c5b}.v12-seg .big{font-size:28px;font-weight:800;color:#173e66;margin:9px 0}
+.v12-seg .mutedline{font-size:12px;color:#64788c;margin:7px 0}.v12-bar{height:8px;border-radius:8px;background:#e9eff5;overflow:hidden;margin:14px 0}.v12-bar i{display:block;height:100%;background:#c52a43;border-radius:8px}
+.v12-financial-lead{font-size:14px;color:#526b80;margin-bottom:12px}
+#view-financial>.panel:first-of-type{border:2px solid #c9d8e5;box-shadow:0 8px 28px #193b5812}
+@media(max-width:1100px){.kpi-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:750px){.v12-seg-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.kpi-ribbon{grid-template-columns:1fr}}
+</style></head><body><header><div class="brand">
+<img alt="Carnival Cruise Line official logo" class="official-logo" onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'" src="https://www.carnival.com/~/media/Images/Footer/carnival-logo-choose-fun-footer.png"/><span id="logo-fallback" style="display:none;font-size:21px;font-weight:bold;color:#14385b">CARNIVAL</span>
+<div class="brand-divider"></div>
+<div><div class="eyebrow">Independent interview case study · Not affiliated with Carnival</div><h1>Cruise Loyalty Financial Model</h1><p>Segmentation · Eligible spending · Redemption forecast</p></div></div>
+<div class="pill">ILLUSTRATIVE DATA ONLY</div></header><main><div class="intro"><div><h2>Loyalty economics &amp; scenario analysis</h2><div class="muted">An interactive, fictional cruise loyalty model for evaluating spending mix, seasonal patterns and deferred revenue.</div></div><button class="secondary" id="export">Export monthly CSV</button></div><div class="layout"><aside><div class="panel"><h3>Cruise loyalty assumptions</h3><div id="controls"></div><label class="season-toggle"><input checked="" id="seasonality" type="checkbox"/> Apply illustrative monthly eligible-spend seasonality</label><p class="note">Use the seasonality strength slider to flatten or amplify the synthetic monthly pattern. No historical Carnival data is used.</p><div class="actions"><button id="baseline">Reset baseline</button><button class="secondary" id="stress">High redemption</button></div></div><div class="panel"><h3>Customer segments</h3><p class="note">Adjust the share of eligible spend attributed to high-value loyal guests. The remaining share is split between first-time and repeat guests. Each segment has different illustrative earn and redemption behavior.</p><div id="segmentSummary"></div></div><div class="panel"><h3>How the cruise model works</h3><p class="note"><b>Points issued</b> = sum of segment spending × segment earn-rate multiplier × overall earn rate.</p><p class="note"><b>Expected redeemable points</b> = segment points × segment redemption-probability multiplier (capped at 100%).</p><p class="note"><b>Deferred revenue added</b> = expected redeemable points × face value per point.</p><p class="note"><b>Revenue recognized</b> = points redeemed × face value, assuming the associated benefit is delivered that month.</p><p class="note"><b>Ending liability</b> = opening liability + new deferred revenue − recognized revenue.</p></div><div class="panel"><h3>Cruise-specific modeling lens</h3><p class="note"><b>Guest spend:</b> illustrative eligible spend on cruise bookings and onboard purchases, not total company revenue.</p><p class="note"><b>Sailing seasonality:</b> toggle a synthetic peak-season demand pattern to test the impact of stronger summer and holiday periods.</p><p class="note"><b>Rewards fulfillment:</b> a redemption becomes recognized revenue only when the promised cruise-related benefit is delivered.</p><p class="note"><b>Management question:</b> how much liability remains after expected reward fulfillment, and how sensitive is it to redemption timing?</p></div></aside><section><nav aria-label="Dashboard views" class="view-tabs"><button class="view-tab active" data-view="overview" type="button">Executive Overview</button><button class="view-tab" data-view="segments" type="button">Customer Segments</button><button class="view-tab" data-view="forecast" type="button">Seasonality &amp; Forecast</button><button class="view-tab" data-view="financial" type="button">Financial Impact</button><button class="view-tab" data-view="roi" type="button">Loyalty Program ROI</button></nav><div class="dashboard-view active" id="view-overview"><div class="metrics"><div class="metric"><small>December deferred revenue</small><strong id="liability">—</strong><span>Unfulfilled estimated rewards</span></div><div class="metric"><small>Annual loyalty revenue recognized</small><strong id="recognized">—</strong><span>Revenue released on delivery</span></div><div class="metric"><small>Annual benefit delivery cost</small><strong id="cost">—</strong><span>Illustrative incremental cost</span></div><div class="metric"><small>Annual contribution</small><strong id="contribution">—</strong><span>Recognized revenue less benefit cost</span></div></div><div class="panel"><div class="section-head"><h3>Management insights</h3><span class="muted">Rule-based observations · illustrative</span></div><div class="insight-grid" id="insights"></div></div><div class="panel"><div class="section-head"><h3>Guest Points Spending — Forecast vs. Actual</h3><div class="legend"><span><i class="dot"></i>Forecast</span><span><i class="dot alt"></i>Actual (sample)</span></div></div><svg aria-label="Forecast versus actual guest spending that earns loyalty points" class="chart" id="spendChart" role="img" viewbox="0 0 820 285"></svg><p class="note">Shows spending eligible to earn loyalty points, not points redeemed. MAPE is based only on months with positive actual spending; zero actuals are excluded from MAPE but included in MAE. Actuals below are <b>fictional sample data</b>, not Carnival records. Enter real values only if authorized to use them.</p><div class="compact-bar"><div><h3 style="margin:0 0 4px">Forecast accuracy</h3><span class="muted">MAPE = average absolute percentage error relative to actuals · fictional observations</span></div><div class="compact-stats" id="accuracyStats"></div></div><details class="drilldown" id="monthlyDrill"><summary>View / edit monthly actuals (12 months)</summary><div class="table-wrap accuracy-scroll"><table><thead><tr><th>Month</th><th>Forecast ($M)</th><th>Actual ($M)</th><th>Variance ($M)</th><th>Variance %</th></tr></thead><tbody id="accuracyRows"></tbody></table></div><p class="note" id="accuracySummary"></p><div class="small-actions"><button class="secondary" id="clearActuals">Clear actuals</button><button class="secondary" id="sampleActuals">Restore sample data</button></div></details></div><div class="panel"><h3>Scenario vs. baseline · full year</h3><div class="comparison" id="compare"></div></div></div><div class="dashboard-view" id="view-segments"><div class="panel"><div class="section-head"><h3>Guest segment forecast accuracy</h3><span class="muted">Choose month · USD millions</span></div><p class="note">Compare each segment's predicted eligible spending with its own observed result. Enter segment-level actuals independently; the total guest-spending actual is not automatically allocated to segments.</p><label class="muted" for="segmentMonth" style="display:inline-block;margin:8px 8px 12px 0">Review month</label><select id="segmentMonth" style="padding:8px 12px;font-size:14px;border:1px solid #ccd5de;border-radius:4px"></select><div class="segment-accuracy" id="segmentAccuracy"></div><p class="note" id="segmentInsight"></p></div><div class="panel"><h3>Guest segment breakdown · full year</h3><div class="segment-grid" id="segments"></div></div></div><div class="dashboard-view" id="view-forecast"><div class="panel"><div class="section-head"><h3>Monthly eligible spending &amp; seasonality</h3><span class="muted">Forecast · USD millions</span></div><svg aria-label="Monthly forecast spending with seasonality" class="chart" id="seasonChart" role="img" viewbox="0 0 820 285"></svg><p class="note">The monthly multipliers are hypothetical. This is a spending forecast, not GAAP cruise revenue.</p></div><div class="panel"><div class="section-head"><h3>Monthly Seasonality Index</h3><button class="secondary" id="resetSeason" type="button">Reset seasonal pattern</button></div><p class="note">Edit the monthly multipliers below. 1.00× means no seasonal effect; 1.20× means spending 20% above the underlying trend. Changes update the spending forecast, point issuance, financial liabilities, and accuracy metrics. All values are illustrative.</p><div class="season-grid" id="seasonInputs"></div><p class="note" id="seasonInterpretation"></p></div><div class="panel"><h3>Forecast assumptions</h3><p class="note">The forecast models <b>eligible spending by transaction month</b>, not recognized cruise revenue. Booking/payment activity may peak in different months than sailing activity. The baseline and seasonality factors are hypothetical and are not calibrated to Carnival records.</p></div></div><div class="dashboard-view" id="view-financial"><div class="panel"><div class="section-head"><h3>Deferred revenue roll-forward</h3><span class="muted">12-month loyalty obligation · USD millions</span></div><div class="waterfall" id="waterfall"></div><p class="note">Opening liability + newly allocated loyalty obligation − revenue released on reward fulfillment = closing liability. Breakage is reflected in estimated redemption at issuance in this simplified model, not shown as a separate monthly release.</p></div><div class="panel"><div class="section-head"><h3>Deferred revenue liability</h3><div class="legend"><span><i class="dot"></i>Current scenario</span><span><i class="dot alt"></i>Baseline</span></div></div><svg aria-label="Deferred revenue liability by month" class="chart" id="chart" role="img" viewbox="0 0 820 285"></svg><p class="note">Higher redemption may accelerate revenue recognition and lower the remaining liability. This does not necessarily mean higher cash collections or economic profit.</p></div><div class="panel"><div class="section-head"><h3>Monthly financial roll-forward</h3><span class="muted">USD · millions of points</span></div><div class="table-wrap"><table><thead><tr><th>Month</th><th>Eligible spend</th><th>Seasonality factor</th><th>Issued points</th><th>Redeemed points</th><th>Ending points*</th><th>New liability</th><th>Revenue released</th><th>Ending liability</th><th>Benefit cost</th></tr></thead><tbody id="rows"></tbody></table></div><p class="note">*Ending points includes all unredeemed points, including those not expected to be redeemed. Financial liability reflects the expected redeemable portion only.</p></div></div><div class="dashboard-view" id="view-roi">
+<div class="roi-heading"><div><div class="eyebrow">COMMERCIAL PERFORMANCE</div><h2>Does loyalty create incremental value?</h2><p>Model the economics of incremental guest spending, contribution margin, and program costs. All figures are hypothetical and not a causal estimate.</p></div><button class="secondary" id="roiReset" type="button">Reset ROI assumptions</button></div>
+<div class="roi-kpis"><div class="roi-kpi"><small>Net incremental contribution</small><strong id="roiNet">—</strong><span>After incremental program costs</span></div><div class="roi-kpi"><small>Incremental contribution before costs</small><strong id="roiGross">—</strong><span>Incremental spend × margin</span></div><div class="roi-kpi"><small>Incremental program costs</small><strong id="roiCosts">—</strong><span>Benefits + administration + campaigns</span></div><div class="roi-kpi"><small>Benefit-cost coverage</small><strong id="roiCoverage">—</strong><span>Contribution / incremental costs</span></div></div>
+<div class="roi-layout"><div class="panel"><div class="section-head"><h3>Scenario assumptions</h3><span class="tag">Editable</span></div><p class="note">The scenario applies to a defined population of enrolled guests. Spending uplift must be incremental relative to a credible no-program counterfactual.</p><div class="roi-controls" id="roiControls"></div></div><div class="panel"><div class="section-head"><h3>Value creation bridge</h3><span class="muted">Annual scenario · USD</span></div><div id="roiBridge" class="roi-bridge"></div><div class="roi-break" id="roiBreak"></div></div></div>
+<div class="panel"><div class="section-head"><h3>Profitability by customer segment</h3><span class="muted">Illustrative allocation, not observed results</span></div><p class="note">Guest mix, spend uplift and reward cost vary by segment. These segment scenarios are separate from the accounting roll-forward.</p><div id="roiSegments" class="roi-segments"></div></div>
+<div class="panel"><div class="section-head"><h3>Break-even sensitivity</h3><span class="muted">Net contribution per guest · USD</span></div><div class="sensitivity-chart" id="roiSensitivity"></div><p class="note">A positive modeled result is not proof that loyalty caused the uplift. Test with randomized offers, matched cohorts, or a credible quasi-experimental design; account for displacement, capacity and acquisition costs.</p></div>
+<div class="panel methodology"><h3>Accounting vs. economics</h3><div class="method-grid"><div><b>Deferred revenue</b><p>Represents a remaining performance obligation, not automatically a cash expense or program loss.</p></div><div><b>Fulfillment costs</b><p>Economic costs of delivering benefits; do not subtract the face value of points again if already accounting for those costs.</p></div><div><b>Incremental contribution</b><p>Revenue caused by the program × contribution margin, minus incremental benefit, administration and campaign costs.</p></div></div></div>
+</div></section></div><div class="footer"><b>Important accounting and modeling caveats:</b> This is an independent, Carnival-inspired educational simulator, not affiliated with or endorsed by Carnival Corporation or Carnival Cruise Line. All figures, including sample actuals, seasonality factors, point rules, and scenarios are invented for demonstration and do not represent Carnival Rewards program terms, Carnival financial results, or a statement of ASC 606 compliance. It assumes points are a distinct material-right obligation, that the benefit is delivered in the redemption month, and uses expected redemption value as a shortcut for initial allocation. Actual revenue allocation depends on relative standalone selling prices and contractual terms; breakage recognition, expiry, and changes in estimates may require separate accounting. Seasonality multipliers and segment behavior are illustrative rather than empirically estimated. Seasonal eligible spend should not be interpreted as GAAP recognized revenue, and segment spending shares are not customer-count shares. Monthly redemption is modeled as a fraction of the <em>remaining expected redeemable pool</em> from all issuance cohorts, so lifetime redemption and timing assumptions do not double count. No cash inflow is assumed when points are redeemed. Contribution excludes program administration, incremental spend, acquisition costs, taxes, and other costs.</div></main><script>
+const defaults={spend:50,growth:2,earn:3,face:1,redeem:80,speed:100,cost:35,seasonality:true,seasonStrength:100,vipShare:20};
+const cfg={spend:['January underlying eligible spend','$','M',20,100,5],growth:['Underlying monthly growth','','%',-2,8,.5],seasonStrength:['Seasonality strength','','%',0,200,10],vipShare:['High-value guest spend share','','%',5,60,5],earn:['Base points earned per $1','',' pts',1,5,.5],face:['Face value per point','','¢',.5,2,.1],redeem:['Base lifetime redemption','','%',50,100,5],speed:['Monthly redemption pace','','%',30,200,10],cost:['Benefit cost / redeemed value','','%',10,80,5]};
+let state={...defaults};const fmt=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n),compact=n=>Math.abs(n)>=1e6?'$'+(n/1e6).toFixed(2)+'M':fmt(n),pts=n=>(n/1e6).toFixed(1)+'M';const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const rates=[5,8,10,11,12,12,13,13,14,14,15,15];
+// Hypothetical monthly eligible-spend multipliers, not observed Carnival results.
+const defaultSeason=[.88,.92,1.08,1.05,1.02,1.15,1.22,1.16,.88,.91,.98,1.15];
+let season=[...defaultSeason];
+const segs=[{id:'first',name:'First-time guests',earn:.75,redeem:.65},{id:'repeat',name:'Repeat guests',earn:1,redeem:1},{id:'vip',name:'High-value loyal guests',earn:1.5,redeem:1.2}];
+function calculate(s){let spend=s.spend*1e6,allOutstanding=0,liability=0,recognizedTotal=0,costTotal=0,rows=[];
+let pools=segs.map(()=>0),segmentTotals=segs.map(x=>({name:x.name,spend:0,issued:0,redeemed:0,liability:0}));
+for(let i=0;i<12;i++){if(i)spend*=1+s.growth/100;
+let factor=s.seasonality?Math.max(.05,1+(season[i]-1)*s.seasonStrength/100):1;
+let effectiveSpend=spend*factor;
+let vip=s.vipShare/100,first=(1-vip)*.4375,repeat=1-vip-first;
+let shares=[first,repeat,vip],issued=0,redeemed=0,added=0,released=0;
+segs.forEach((seg,j)=>{let ss=effectiveSpend*shares[j],newPts=ss*s.earn*seg.earn,prob=Math.min(1,s.redeem/100*seg.redeem),expected=newPts*prob,face=s.face/100;
+let newLiability=expected*face;pools[j]+=expected;let redeemedSeg=pools[j]*Math.min(.999,rates[i]/100*s.speed/100);pools[j]-=redeemedSeg;
+let releasedSeg=redeemedSeg*face;segmentTotals[j].spend+=ss;segmentTotals[j].issued+=newPts;segmentTotals[j].redeemed+=redeemedSeg;segmentTotals[j].liability+=newLiability-releasedSeg;
+issued+=newPts;redeemed+=redeemedSeg;added+=newLiability;released+=releasedSeg;});
+allOutstanding+=issued-redeemed;liability+=added-released;recognizedTotal+=released;let cost=released*s.cost/100;costTotal+=cost;
+rows.push({month:months[i],spend:effectiveSpend,unseasonalSpend:spend,seasonFactor:factor,issued,redeemed,outstanding:allOutstanding,added,released,liability,cost});}
+return{rows,segments:segmentTotals,liability,recognizedTotal,costTotal,contribution:recognizedTotal-costTotal};}
+const sampleActuals=[44.9,47.4,58.1,57.2,55.1,65.3,null,null,null,null,null,null];
+let actuals=[...sampleActuals];
+let segmentActuals=Array.from({length:12},()=>[null,null,null]);let selectedSegmentMonth=0;
+const base=calculate(defaults),controls=document.getElementById('controls');
+for(const [k,c] of Object.entries(cfg)){const d=document.createElement('div');d.className='control';d.innerHTML=`<label for="${k}">${c[0]} <output id="o-${k}"></output></label><input id="${k}" type="range" min="${c[3]}" max="${c[4]}" step="${c[5]}"><div class="range"><span>${c[3]}${c[2]}</span><span>${c[4]}${c[2]}</span></div>`;controls.appendChild(d);document.getElementById(k).addEventListener('input',e=>{state[k]=+e.target.value;render()})}
+function render(){document.getElementById('seasonality').checked=state.seasonality;for(const [k,c] of Object.entries(cfg)){document.getElementById(k).value=state[k];document.getElementById('o-'+k).textContent=(c[1]||'')+state[k]+c[2]}
+let v=calculate(state);for(let [id,n] of [['liability',v.liability],['recognized',v.recognizedTotal],['cost',v.costTotal],['contribution',v.contribution]])document.getElementById(id).textContent=compact(n);
+document.getElementById('rows').innerHTML=v.rows.map(r=>`<tr><td>${r.month}</td><td>${fmt(r.spend)}</td><td>${r.seasonFactor.toFixed(2)}×</td><td>${pts(r.issued)}</td><td>${pts(r.redeemed)}</td><td>${pts(r.outstanding)}</td><td>${fmt(r.added)}</td><td>${fmt(r.released)}</td><td>${fmt(r.liability)}</td><td>${fmt(r.cost)}</td></tr>`).join('');
+document.getElementById('segments').innerHTML=v.segments.map(x=>`<div class="segment-card"><strong>${x.name}</strong><small>Annual eligible spend</small><strong>${compact(x.spend)}</strong><small>Points issued</small><strong>${pts(x.issued)}</strong><small>Ending deferred revenue</small><strong>${compact(x.liability)}</strong></div>`).join('');
+let first=(100-state.vipShare)*.4375,repeat=100-state.vipShare-first;
+document.getElementById('segmentSummary').innerHTML=`<p class="note">First-time: <b>${first.toFixed(1)}%</b> · Repeat: <b>${repeat.toFixed(1)}%</b> · High-value: <b>${state.vipShare}%</b> of eligible spending</p>`;
+let specs=[['Ending liability',v.liability,base.liability],['Recognized revenue',v.recognizedTotal,base.recognizedTotal],['Contribution',v.contribution,base.contribution]];
+document.getElementById('compare').innerHTML=specs.map(([l,a,b])=>`<div><small>${l}</small><strong>${compact(a)}</strong><small>Baseline ${compact(b)}</small><small class="${a-b>=0?'pos':'neg'}">${a-b>=0?'+':'−'}${compact(Math.abs(a-b))} vs. baseline</small></div>`).join('');
+draw(v.rows,base.rows,'chart','liability',false);drawForecastActual(v.rows);renderAccuracy(v.rows);renderSegmentAccuracy(v.rows);renderSeasonInputs(v.rows);}
+function renderSeasonInputs(rows){
+const el=document.getElementById('seasonInputs');if(!el)return;
+const focused=document.activeElement;const focusedIndex=focused&&focused.dataset?focused.dataset.season:null;
+el.innerHTML=months.map((m,i)=>`<label class="season-cell"><span>${m}</span><input aria-label="${m} seasonality multiplier" type="number" data-season="${i}" min="0.25" max="2.5" step="0.01" value="${season[i].toFixed(2)}"/><small>${(rows[i].seasonFactor).toFixed(2)}× applied</small></label>`).join('');
+el.querySelectorAll('[data-season]').forEach(input=>input.addEventListener('change',e=>{const value=Number(e.target.value);if(Number.isFinite(value)&&value>=.25&&value<=2.5){season[+e.target.dataset.season]=value;render()}else{e.target.value=season[+e.target.dataset.season].toFixed(2)}}));
+const hi=rows.reduce((a,b)=>a.spend>b.spend?a:b),lo=rows.reduce((a,b)=>a.spend<b.spend?a:b);
+document.getElementById('seasonInterpretation').textContent=`Highest projected eligible spending: ${hi.month} (${compact(hi.spend)}). Lowest: ${lo.month} (${compact(lo.spend)}). More eligible spend generally issues more points under the assumed earn rules.`;
+}
+function draw(a,b,id,key,unseasonal){const svg=document.getElementById(id),W=820,H=285,L=68,R=20,T=20,B=39,other=r=>unseasonal?r.unseasonalSpend:r[key],current=r=>r[key],max=Math.max(...a.map(current),...b.map(other),1)*1.12;
+const x=i=>L+i*(W-L-R)/11,y=n=>H-B-n/max*(H-T-B),path=(r,fn)=>r.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+','+y(fn(v)).toFixed(1)).join(' ');
+let out='';for(let i=0;i<=4;i++){let val=max*i/4,Y=y(val);out+=`<line x1="${L}" y1="${Y}" x2="${W-R}" y2="${Y}" stroke="#e8edf0"/><text x="${L-10}" y="${Y+4}" text-anchor="end" fill="#73808d" font-size="14">$${(val/1e6).toFixed(1)}M</text>`}
+months.forEach((m,i)=>out+=`<text x="${x(i)}" y="${H-12}" text-anchor="middle" fill="#73808d" font-size="14">${m}</text>`);
+out+=`<path d="${path(b,other)}" fill="none" stroke="#aab4be" stroke-width="3" stroke-dasharray="7 5"/><path d="${path(a,current)}" fill="none" stroke="#173e66" stroke-width="3.5"/>`;
+a.forEach((r,i)=>out+=`<circle cx="${x(i)}" cy="${y(current(r))}" r="3.5" fill="#173e66"><title>${r.month}: ${fmt(current(r))}</title></circle>`);svg.innerHTML=out;}
+
+function renderAccuracy(rows){let count=0,absErr=0,absPct=0;
+document.getElementById('accuracyRows').innerHTML=rows.map((r,i)=>{let a=actuals[i],valid=a!==null&&Number.isFinite(a)&&a>=0,forecast=r.spend/1e6,delta=valid?a-forecast:null,pct=valid&&a>0?100*delta/a:null;if(valid){count++;absErr+=Math.abs(delta);if(a>0)absPct+=Math.abs(pct)}return `<tr><td>${r.month}</td><td>${forecast.toFixed(2)}</td><td><input aria-label="${r.month} actual guest point spending in millions" data-actual="${i}" type="number" min="0" step="0.1" placeholder="—" value="${valid?a:''}" style="width:90px;border:1px solid #dce2e8;border-radius:3px;padding:6px;font:inherit;background:#fff"></td><td>${valid?(delta>=0?'+':'')+delta.toFixed(2):'—'}</td><td>${pct!==null?(pct>=0?'+':'')+pct.toFixed(1)+'%':'N/A'}</td></tr>`}).join('');
+const mapeN=actuals.filter(a=>a!==null&&Number.isFinite(a)&&a>0).length;document.getElementById('accuracyStats').innerHTML=`<span>Observed months<b>${count} / 12</b></span><span>MAE<b>${count?'$'+(absErr/count).toFixed(2)+'M':'—'}</b></span><span>MAPE<b>${mapeN?(absPct/mapeN).toFixed(1)+'%':'—'}</b></span>`;
+document.getElementById('accuracySummary').textContent=count?`Sample months with actuals: ${count} · Mean absolute error: $${(absErr/count).toFixed(2)}M · Mean absolute percentage error: ${mapeN?(absPct/mapeN).toFixed(1)+'%':'N/A'} (calculated for ${mapeN} months with actual spending above $0). Forecasts update when you adjust assumptions; sample actuals remain unchanged.`:'Enter monthly actuals to compare performance against the forecast.';
+document.querySelectorAll('[data-actual]').forEach(el=>el.addEventListener('change',e=>{let i=+e.target.dataset.actual,v=e.target.value.trim();actuals[i]=v===''?null:Math.max(0,Number(v));render()}));}
+function drawForecastActual(rows){const svg=document.getElementById('spendChart'),W=820,H=285,L=68,R=20,T=20,B=39,vals=[...rows.map(r=>r.spend),...actuals.filter(v=>v!==null).map(v=>v*1e6)],max=Math.max(...vals,1)*1.12;
+const x=i=>L+i*(W-L-R)/11,y=n=>H-B-n/max*(H-T-B);let out='';for(let i=0;i<=4;i++){let val=max*i/4,Y=y(val);out+=`<line x1="${L}" y1="${Y}" x2="${W-R}" y2="${Y}" stroke="#e8edf0"/><text x="${L-10}" y="${Y+4}" text-anchor="end" fill="#73808d" font-size="14">$${(val/1e6).toFixed(1)}M</text>`}
+months.forEach((m,i)=>out+=`<text x="${x(i)}" y="${H-12}" text-anchor="middle" fill="#73808d" font-size="14">${m}</text>`);
+out+=`<path d="${rows.map((r,i)=>(i?'L':'M')+x(i).toFixed(1)+','+y(r.spend).toFixed(1)).join(' ')}" fill="none" stroke="#173e66" stroke-width="3.5"/>`;
+rows.forEach((r,i)=>out+=`<circle cx="${x(i)}" cy="${y(r.spend)}" r="3.5" fill="#173e66"><title>${r.month} forecast: ${fmt(r.spend)}</title></circle>`);
+let path='',prev=false;actuals.forEach((a,i)=>{if(a===null){prev=false;return}path+=(prev?'L':'M')+x(i).toFixed(1)+','+y(a*1e6).toFixed(1)+' ';prev=true});out+=`<path d="${path}" fill="none" stroke="#aab4be" stroke-width="3" stroke-dasharray="7 5"/>`;
+actuals.forEach((a,i)=>{if(a!==null)out+=`<circle cx="${x(i)}" cy="${y(a*1e6)}" r="5" fill="#aab4be" stroke="white" stroke-width="1.5"><title>${months[i]} sample actual: $${a.toFixed(2)}M</title></circle>`});svg.innerHTML=out;}
+
+// Segment forecast versus separately entered segment actuals (not inferred from aggregate actuals).
+const segmentMonthSelect=document.getElementById('segmentMonth');segmentMonthSelect.innerHTML=months.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+segmentMonthSelect.onchange=e=>{selectedSegmentMonth=Number(e.target.value);render()};
+function renderSegmentAccuracy(rows){segmentMonthSelect.value=selectedSegmentMonth;const i=selectedSegmentMonth,r=rows[i],vip=state.vipShare/100,first=(1-vip)*.4375,repeat=1-vip-first,shares=[first,repeat,vip];let ranked=[];
+document.getElementById('segmentAccuracy').innerHTML=segs.map((seg,j)=>{let forecast=r.spend*shares[j]/1e6,actual=segmentActuals[i][j],valid=actual!==null&&Number.isFinite(actual)&&actual>=0,variance=valid?actual-forecast:null;if(valid)ranked.push({name:seg.name,variance});return `<div class="segment-accuracy-card"><h4>${seg.name}</h4><div class="muted">Forecast: <b>$${forecast.toFixed(2)}M</b></div><label for="segActual-${j}">Actual eligible spending ($M)</label><input id="segActual-${j}" type="number" min="0" step="0.1" placeholder="Not observed" value="${valid?actual:''}"><div class="result">Variance: <b>${valid?(variance>=0?'+':'')+'$'+variance.toFixed(2)+'M':'—'}</b><br>Variance %: <b>${valid?(variance>=0?'+':'')+(variance/forecast*100).toFixed(1)+'%':'—'}</b></div></div>`}).join('');
+const insight=document.getElementById('segmentInsight');if(ranked.length){const top=ranked.reduce((a,b)=>Math.abs(a.variance)>=Math.abs(b.variance)?a:b);insight.textContent=`Largest observed segment deviation in ${months[i]}: ${top.name} (${top.variance>=0?'+':''}$${top.variance.toFixed(2)}M). ${ranked.length}/3 segment actuals entered. Interpret partial data cautiously.`}else insight.textContent='Enter actual spending for a segment to compare its performance against the forecast. No segment-level actuals are assumed.';
+segs.forEach((seg,j)=>document.getElementById(`segActual-${j}`).addEventListener('change',e=>{const val=e.target.value.trim();segmentActuals[i][j]=val===''?null:Math.max(0,Number(val));render()}));}
+document.getElementById('clearActuals').onclick=()=>{actuals=Array(12).fill(null);render()};document.getElementById('sampleActuals').onclick=()=>{actuals=[...sampleActuals];render()};
+document.getElementById('resetSeason').onclick=()=>{season=[...defaultSeason];render()};document.getElementById('seasonality').onchange=e=>{state.seasonality=e.target.checked;render()};
+document.getElementById('baseline').onclick=()=>{state={...defaults};render()};
+document.getElementById('stress').onclick=()=>{state={...defaults,speed:160};render()};
+document.getElementById('export').onclick=()=>{const v=calculate(state),cols=['month','spend','unseasonalSpend','seasonFactor','actualGuestSpend','variance','issued','redeemed','outstanding','added','released','liability','cost'];const csv=[cols.join(','),...v.rows.map(r=>cols.map(c=>c==='actualGuestSpend'?(actuals[months.indexOf(r.month)]===null?'':actuals[months.indexOf(r.month)]*1e6):c==='variance'?(actuals[months.indexOf(r.month)]===null?'':actuals[months.indexOf(r.month)]*1e6-r.spend):r[c]).join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='cruise_loyalty_forecast_vs_actual.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};render();
+
+
+// Navigation and executive analytical views.
+document.querySelectorAll('.view-tab').forEach(button=>button.addEventListener('click',()=>{
+ document.querySelectorAll('.view-tab').forEach(x=>x.classList.toggle('active',x===button));
+ document.querySelectorAll('.dashboard-view').forEach(x=>x.classList.toggle('active',x.id==='view-'+button.dataset.view));
+}));
+function executiveExtras(){
+ const v=calculate(state),rows=v.rows,observed=actuals.map((a,i)=>({a,i})).filter(x=>x.a!==null&&Number.isFinite(x.a));
+ const totalAdded=rows.reduce((a,r)=>a+r.added,0),totalReleased=rows.reduce((a,r)=>a+r.released,0);
+ const cards=[['Opening balance',0,'neutral'],['New points allocated',totalAdded,'positive'],['Reward obligations fulfilled',-totalReleased,'negative'],['Closing balance',v.liability,'neutral']];
+ document.getElementById('waterfall').innerHTML=cards.map(([label,value,cls])=>`<div class="wf-item ${cls}"><small>${label}</small><strong>${value<0?'−':''}${compact(Math.abs(value))}</strong><div class="wf-bar" style="width:${Math.max(5,Math.min(100,Math.abs(value)/Math.max(totalAdded,v.liability,1)*100))}%"></div></div>`).join('');
+ let errors=observed.map(({a,i})=>({i,delta:a-rows[i].spend/1e6}));let worst=errors.slice().sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta))[0];
+ let insights=[['Forecast coverage',`${observed.length} of 12 months have illustrative actual values. Unobserved months are excluded from accuracy metrics.`],['Largest monthly variance',worst?`${months[worst.i]}: ${worst.delta>=0?'+':''}${worst.delta.toFixed(2)}M vs forecast. This is a deviation, not evidence of its cause.`:'No observed monthly spending has been entered.'],['Loyalty obligation',`New modeled obligations: ${compact(totalAdded)}; released on fulfillment: ${compact(totalReleased)}; ending liability: ${compact(v.liability)}.`]];
+ let segDeltas=segmentActuals.flatMap((a,i)=>a.map((actual,j)=>({actual,i,j}))).filter(x=>x.actual!==null&&Number.isFinite(x.actual));
+ if(segDeltas.length){let vip=state.vipShare/100,first=(1-vip)*.4375,repeat=1-vip-first,shares=[first,repeat,vip];let largest=segDeltas.map(x=>({...x,delta:x.actual-rows[x.i].spend/1e6*shares[x.j]})).sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta))[0];insights[1]=['Largest observed segment deviation',`${segs[largest.j].name}, ${months[largest.i]}: ${largest.delta>=0?'+':''}${largest.delta.toFixed(2)}M. Investigate guest mix or seasonality before attributing a cause.`];}
+ document.getElementById('insights').innerHTML=insights.map(([title,body])=>`<div class="insight"><strong>${title}</strong>${body}</div>`).join('');
+ const svg=document.getElementById('seasonChart'),W=820,H=285,L=70,R=20,T=18,B=39,max=Math.max(...rows.map(r=>r.spend),1)*1.13;
+ const x=i=>L+i*(W-L-R)/11,y=n=>H-B-n/max*(H-T-B);
+ let out='';for(let k=0;k<=4;k++){let val=max*k/4,Y=y(val);out+=`<line x1="${L}" y1="${Y}" x2="${W-R}" y2="${Y}" stroke="#e8edf0"/><text x="${L-9}" y="${Y+5}" text-anchor="end" fill="#73808d" font-size="14">$${(val/1e6).toFixed(0)}M</text>`;}
+ rows.forEach((r,i)=>out+=`<text x="${x(i)}" y="${H-9}" text-anchor="middle" fill="#73808d" font-size="14">${r.month}</text>`);
+ out+=`<path d="${rows.map((r,i)=>(i?'L':'M')+x(i)+','+y(r.unseasonalSpend)).join(' ')}" fill="none" stroke="#aab4be" stroke-width="3" stroke-dasharray="7 5"/><path d="${rows.map((r,i)=>(i?'L':'M')+x(i)+','+y(r.spend)).join(' ')}" fill="none" stroke="#173e66" stroke-width="3.5"/>`;
+ svg.innerHTML=out;
+}
+const originalRender=render;render=function(){originalRender();executiveExtras()};render();
+</script><script>
+(function(){
+let linkedCosts=false; const defaultsROI={guests:10000,spend:1000,uplift:12,margin:30,benefits:28,admin:6,campaign:4};let roi={...defaultsROI};
+const specs={guests:['Enrolled guests','',1000,50000,1000],spend:['Baseline annual spend / guest','$',500,5000,100],uplift:['Incremental spend uplift','%',0,35,1],margin:['Incremental contribution margin','%',5,70,1],benefits:['Incremental benefit cost / guest','$',0,150,2],admin:['Administration cost / guest','$',0,60,1],campaign:['Campaign cost / guest','$',0,60,1]};
+const num=n=>n.toLocaleString('en-US',{maximumFractionDigits:0});const money=n=>(n<0?'−':'')+'$'+num(Math.abs(n));
+const controls=document.getElementById('roiControls');controls.innerHTML=Object.entries(specs).map(([k,[label,unit,min,max,step]])=>`<div class="roi-control"><label for="roi-${k}"><span>${label}</span><output id="roiout-${k}"></output></label><input id="roi-${k}" type="range" min="${min}" max="${max}" step="${step}" value="${roi[k]}"></div>`).join('');
+function renderROI(){for(const [k,[label,unit]] of Object.entries(specs)){document.getElementById('roiout-'+k).textContent=(unit==='%'?num(roi[k])+'%':unit==='$'?money(roi[k]):num(roi[k]));document.getElementById('roi-'+k).value=roi[k]}
+const perGuestRevenue=roi.spend*roi.uplift/100,perGuestContribution=perGuestRevenue*roi.margin/100,perGuestCost=roi.benefits+roi.admin+roi.campaign,gross=perGuestContribution*roi.guests,linkedBenefit=linkedCosts?calculate(state).costTotal:roi.benefits*roi.guests,adminCampaign=(roi.admin+roi.campaign)*roi.guests,cost=linkedBenefit+adminCampaign,net=gross-cost;
+for(const [id,val] of [['roiGross',gross],['roiCosts',cost],['roiNet',net]]){const el=document.getElementById(id);el.textContent=money(val);el.classList.toggle('negative',id==='roiNet'&&net<0);el.classList.toggle('positive',id==='roiNet'&&net>=0)}
+document.getElementById('roiCoverage').textContent=cost?((gross/cost).toFixed(2)+'×'):'N/A';
+const max=Math.max(gross,cost,Math.abs(net),1);document.getElementById('roiBridge').innerHTML=[['Incremental contribution',gross,''],['Incremental program costs',cost,'cost'],['Net incremental contribution',net,net<0?'loss':'net']].map(([label,v,cl])=>`<div class="bridge-item"><div class="bridge-label"><span>${label}</span><b>${money(v)}</b></div><div class="bridge-track"><div class="bridge-fill ${cl}" style="width:${Math.abs(v)/max*100}%"></div></div></div>`).join('');
+const effectiveCostPerGuest=cost/roi.guests;const breakEven=roi.spend*roi.margin>0?100*effectiveCostPerGuest/(roi.spend*roi.margin/100):Infinity;
+document.getElementById('roiBreak').innerHTML=`<b>Break-even spend uplift: ${Number.isFinite(breakEven)?breakEven.toFixed(1)+'%':'N/A'}</b><div>At the current margin and costs, each guest needs ${money(effectiveCostPerGuest/(roi.margin/100))} in incremental eligible spending to cover ${money(effectiveCostPerGuest)} of incremental program costs. Modeled uplift: ${roi.uplift}%.</div>`;
+const segments=[{name:'First-time guests',share:.35,mult:.65,cost:.80},{name:'Repeat guests',share:.45,mult:1.10,cost:1},{name:'High-value loyal',share:.20,mult:1.55,cost:1.45}];const weighted=segments.reduce((s,x)=>s+x.share*x.mult,0);
+document.getElementById('roiSegments').innerHTML=segments.map(x=>{const count=roi.guests*x.share,segUplift=roi.uplift*x.mult/weighted,segContribution=roi.spend*segUplift/100*roi.margin/100,segCost=effectiveCostPerGuest*x.cost,segNet=(segContribution-segCost)*count;return `<div class="roi-segment"><h4>${x.name}</h4><p>${Math.round(x.share*100)}% of illustrative guest population · ${num(count)} guests</p><div class="roi-seg-number" style="color:${segNet>=0?'#176c57':'#b4233e'}">${money(segNet)}</div><p>Modeled uplift: <b>${segUplift.toFixed(1)}%</b></p><p>Cost / guest: <b>${money(segCost)}</b></p><div class="roi-mini-track"><div class="roi-mini-fill" style="width:${Math.min(100,Math.max(0,segUplift/30*100))}%;background:${segNet>=0?'#176c57':'#b4233e'}"></div></div></div>`}).join('');
+const tests=[0,5,10,15,20,25];document.getElementById('roiSensitivity').innerHTML=tests.map(u=>{const n=roi.spend*u/100*roi.margin/100-effectiveCostPerGuest;return `<div class="sensitivity-cell ${n>=0?'positive':'negative'}"><small>${u}% uplift</small><strong>${money(n)}</strong><small>per guest</small></div>`}).join('');
+}
+document.addEventListener('loyalty-financial-updated',()=>{if(linkedCosts)renderROI()});document.addEventListener('loyalty-link-toggle',e=>{linkedCosts=e.detail;renderROI()});controls.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{roi[el.id.replace('roi-','')]=Number(el.value);renderROI()}));document.getElementById('roiReset').addEventListener('click',()=>{roi={...defaultsROI};renderROI()});renderROI();
+})();
+</script><script>
+/* V11 KPI ribbons: MAPE compares both forecast and actual in USD millions. */
+(function(){
+const sections=['overview','segments','forecast','financial','roi'];
+for(const name of sections){const view=document.getElementById('view-'+name);const ribbon=document.createElement('div');ribbon.className='kpi-ribbon';ribbon.id='kpi-'+name;view.prepend(ribbon);const note=document.createElement('p');note.className='kpi-legend';note.id='kpi-note-'+name;ribbon.after(note)}
+const cash=n=>(n<0?'−':'')+'$'+Math.abs(n/1e6).toFixed(2)+'M';
+const pct=n=>n.toFixed(1)+'%';
+const change=(a,b)=>b===0?'No baseline':(a-b>=0?'+':'')+pct((a-b)/Math.abs(b)*100)+' vs baseline';
+const tile=(name,value,chip,kind,detail)=>`<article class="kpi-tile ${kind}"><div class="kpi-name">${name}</div><div class="kpi-number">${value}</div><span class="kpi-chip">${chip}</span><div class="kpi-detail">${detail}</div></article>`;
+function paint(name,items,note){document.getElementById('kpi-'+name).innerHTML=items.map(x=>tile(...x)).join('');document.getElementById('kpi-note-'+name).textContent=note}
+function update(){const v=calculate(state), b=calculate(defaults),annual=v.rows.reduce((s,r)=>s+r.spend,0),baseAnnual=b.rows.reduce((s,r)=>s+r.spend,0),issued=v.rows.reduce((s,r)=>s+r.issued,0),added=v.rows.reduce((s,r)=>s+r.added,0),released=v.rows.reduce((s,r)=>s+r.released,0);
+const valid=v.rows.map((r,i)=>({f:r.spend/1e6,a:actuals[i]})).filter(x=>x.a!==null&&Number.isFinite(x.a)&&x.a>0);const mape=valid.length?valid.reduce((s,x)=>s+Math.abs(x.a-x.f)/x.a,0)/valid.length*100:null;
+const acc=mape===null?['—','No actuals','neutral']: [pct(mape),mape<=5?'Within 5% target':mape<=10?'5–10% error':'Above 10% error',mape<=5?'good':mape<=10?'neutral':'bad'];
+paint('overview',[
+['Annual eligible spending',cash(annual),change(annual,baseAnnual),annual>=baseAnnual?'good':'bad','Scenario vs original forecast; higher is favorable only if profitable'],
+['Forecast MAPE',acc[0],acc[1],acc[2],`${valid.length} of 12 months with sample actuals · lower is better · illustrative 5% target`],
+['Annual loyalty contribution',cash(v.contribution),change(v.contribution,b.contribution),v.contribution>=b.contribution?'good':'bad','Reward revenue released less delivery cost; excludes program overhead']
+],'Green/red indicates favorable/unfavorable versus baseline or a stated illustrative target; not real Carnival performance.');
+const share=state.vipShare, first=(100-share)*.4375, repeat=100-share-first;
+paint('segments',[
+['High-value spend share',pct(share),'Mix assumption','neutral','Share of eligible spending, not share of guests'],
+['Repeat guest spend share',pct(repeat),'Mix assumption','neutral','Illustrative segment allocation'],
+['First-time spend share',pct(first),'Mix assumption','neutral','Segment actuals can be entered below']
+],'Segment shares are scenario assumptions, not performance scores; neutral color is intentional.');
+const peak=v.rows.reduce((a,r)=>r.spend>a.spend?r:a,v.rows[0]);const trough=v.rows.reduce((a,r)=>r.spend<a.spend?r:a,v.rows[0]);
+paint('forecast',[
+['Annual eligible spend forecast',cash(annual),change(annual,baseAnnual),annual>=baseAnnual?'good':'bad','Scenario vs original baseline'],
+['Peak spending month',peak.month,cash(peak.spend),'neutral','Forecast based on editable seasonality'],
+['Lowest spending month',trough.month,cash(trough.spend),'neutral','Transaction-month spending, not sailing revenue']
+],'Forecast growth is not automatically profit; seasonal values are hypothetical.');
+paint('financial',[
+['Ending deferred revenue',cash(v.liability),change(v.liability,b.liability),'neutral','A liability balance: higher is not automatically good or bad'],
+['New loyalty obligations',cash(added),'Points issued','neutral','Simplified allocated liability added during the year'],
+['Revenue released',cash(released),change(released,b.recognizedTotal),'neutral','Recognized on assumed reward fulfillment; not new cash']
+],'Financial liability metrics use neutral status because direction alone does not imply success.');
+}
+const oldRender=render;render=function(){oldRender();update()};update();
+function updateROI(){const get=id=>document.getElementById(id)?.textContent||'—';const raw=get('roiNet');const val=Number(raw.replace(/[^\d.−-]/g,'').replace('−','-'));const cost=get('roiCosts'),coverage=get('roiCoverage');const positive=Number.isFinite(val)&&val>=0;
+paint('roi',[
+['Net incremental contribution',raw,positive?'Above break-even':'Below break-even',positive?'good':'bad','Incremental contribution after program costs'],
+['Incremental program costs',cost,'Cost to cover','neutral','Benefits, administration and campaigns'],
+['Contribution / cost',coverage,positive?'Covers modeled costs':'Does not cover costs',positive?'good':'bad','Break-even threshold: 1.00×']
+],'ROI reflects modeled assumptions, not measured causal uplift. Green indicates positive modeled net contribution.');}
+const roiControls=document.getElementById('roiControls');roiControls.addEventListener('input',()=>queueMicrotask(updateROI));document.getElementById('roiReset').addEventListener('click',()=>queueMicrotask(updateROI));updateROI();
+})();
+</script>
+<script>
+/* V12: simplified decision-focused KPI presentation. All points are scenario estimates. */
+(function(){
+const moneyM=n=>'$'+(n/1e6).toFixed(2)+'M';
+const pointM=n=>(n/1e6).toFixed(1)+'M';
+const delta=(a,b)=>b>0?(a>=b?'+':'')+((a/b-1)*100).toFixed(1)+'% vs baseline':'No baseline';
+const k=(label,value,chip,status,detail)=>`<article class="kpi-tile ${status}"><div class="kpi-name">${label}</div><div class="kpi-number">${value}</div><span class="kpi-chip">${chip}</span><div class="kpi-detail">${detail}</div></article>`;
+const write=(name,cards,note)=>{document.getElementById('kpi-'+name).innerHTML=cards.map(c=>k(...c)).join('');document.getElementById('kpi-note-'+name).textContent=note;};
+const sum=(a,field)=>a.reduce((t,r)=>t+r[field],0);
+const currentYTD=()=>{let last=actuals.reduce((n,v,i)=>v!==null&&Number.isFinite(v)?i:n,-1);return last>=0?last+1:0};
+function redraw(){
+ const v=calculate(state), b=calculate(defaults),annual=sum(v.rows,'spend'),baseAnnual=sum(b.rows,'spend');
+ const n=currentYTD(),y=v.rows.slice(0,n),yb=b.rows.slice(0,n);
+ const issued=sum(y,'issued'),redeemed=sum(y,'redeemed'),outstanding=n?y[n-1].outstanding:0;
+ write('overview',[
+ ['Forecast annual eligible spending',moneyM(annual),delta(annual,baseAnnual),annual>=baseAnnual?'good':'bad','Total qualifying spend forecast for the full year; not GAAP revenue'],
+ ['Points earned · YTD',pointM(issued),n?delta(issued,sum(yb,'issued')):'No observed months','neutral',`Scenario estimate through ${n?months[n-1]:'—'}; not observed point transactions`],
+ ['Points redeemed · YTD',pointM(redeemed),n?delta(redeemed,sum(yb,'redeemed')):'No observed months','neutral','Estimated fulfilled redemptions; higher is not necessarily better'],
+ ['Points outstanding · YTD',pointM(outstanding),'Unredeemed balance','neutral','Issued less redeemed; excludes expiry/adjustments']
+ ],`YTD is through ${n?months[n-1]:'no months'} based on months with sample spending actuals. Point metrics remain modeled estimates, NOT actual loyalty records. Colors are neutral for point activity because direction alone does not determine success.`);
+ const total=annual;
+ const shares=v.segments.map(s=>s.spend/total*100);
+ const segmentNames=['First-time guests','Repeat guests','High-value loyal guests'];
+ const segmentMarkup=v.segments.map((s,i)=>`<article class="v12-seg"><h4>${segmentNames[i]}</h4><div class="mutedline">Share of qualifying spending</div><div class="big">${shares[i].toFixed(1)}%</div><div class="v12-bar"><i style="width:${shares[i].toFixed(1)}%"></i></div><div class="mutedline"><b>Eligible spend:</b> ${moneyM(s.spend)}</div><div class="mutedline"><b>Points issued:</b> ${pointM(s.issued)}</div><div class="mutedline"><b>Points redeemed:</b> ${pointM(s.redeemed)}</div><div class="mutedline"><b>Redemption / issued:</b> ${s.issued? (s.redeemed/s.issued*100).toFixed(1):'0.0'}% (period-to-date)</div></article>`).join('');
+ let grid=document.getElementById('v12-seg-grid');if(!grid){grid=document.createElement('div');grid.id='v12-seg-grid';grid.className='v12-seg-grid';const firstPanel=document.querySelector('#view-segments>.panel');firstPanel.before(grid)}grid.innerHTML=segmentMarkup;
+ write('segments',[
+ ['First-time spending share',shares[0].toFixed(1)+'%','Mix assumption','neutral','Share of spending, not percentage of guests'],
+ ['Repeat spending share',shares[1].toFixed(1)+'%','Mix assumption','neutral','Estimated share of qualifying spending'],
+ ['High-value spending share',shares[2].toFixed(1)+'%','Mix assumption','neutral','Different earning and redemption assumptions'],
+ ['Points redeemed · full year',pointM(sum(v.rows,'redeemed')),'Modeled volume','neutral','Across all three segments']
+ ],'Compare the segment cards below. Segment shares and redemption patterns are hypothetical, not observed Carnival data.');
+ const peak=v.rows.reduce((a,r)=>r.spend>a.spend?r:a,v.rows[0]);const low=v.rows.reduce((a,r)=>r.spend<a.spend?r:a,v.rows[0]);
+ const issuedAll=sum(v.rows,'issued'),redAll=sum(v.rows,'redeemed'),bi=sum(b.rows,'issued'),br=sum(b.rows,'redeemed');
+ write('forecast',[
+ ['Annual eligible spend forecast',moneyM(annual),delta(annual,baseAnnual),annual>=baseAnnual?'good':'bad','Projected qualifying purchases, not recognized revenue'],
+ ['Peak spending month',peak.month,moneyM(peak.spend),'neutral','Highest projected monthly eligible spending'],
+ ['Lowest spending month',low.month,moneyM(low.spend),'neutral','Lowest projected monthly eligible spending'],
+ ['Points issued / redeemed',pointM(issuedAll)+' / '+pointM(redAll),`${delta(issuedAll,bi)} issued`,'neutral',`${delta(redAll,br)} redeemed; annual modeled totals`]
+ ],'Forecast point issuance and redemption comparisons are against the original simulated baseline, not observed actuals.');
+ const added=sum(v.rows,'added'),released=sum(v.rows,'released');
+ write('financial',[
+ ['Opening deferred revenue','$0.00M','Model assumption','neutral','Simplified simulation starts with no outstanding liability'],
+ ['New loyalty obligations',moneyM(added),'Added to liability','neutral','Estimated allocation from new point issuance'],
+ ['Revenue released',moneyM(released),'Reduces liability','neutral','Benefits assumed delivered in redemption month'],
+ ['Ending deferred revenue',moneyM(v.liability),'Closing liability','neutral','Opening + new obligations − revenue released']
+ ],'Deferred revenue is a balance-sheet liability, not an operating expense or automatically a negative performance outcome.');
+}
+const old=render;render=function(){old();redraw()};
+const financial=document.getElementById('view-financial');const wf=document.getElementById('waterfall');if(wf){const p=wf.closest('.panel');financial.insertBefore(p,document.getElementById('kpi-financial'));}
+const overview=document.getElementById('view-overview');const hint=document.createElement('p');hint.className='v12-lead';hint.textContent='At a glance: qualifying spending, points earned, points redeemed and points still outstanding. All values are simulated.';overview.insertBefore(hint,document.getElementById('kpi-overview'));
+const seg=document.getElementById('view-segments');const sh=document.createElement('p');sh.className='v12-lead';sh.textContent='How guest types contribute to eligible spending and loyalty activity.';seg.insertBefore(sh,document.getElementById('kpi-segments'));
+const roiv=document.getElementById('view-roi');const rh=document.createElement('p');rh.className='v12-lead';rh.textContent='What-if analysis: adjust spending uplift, contribution margin and program costs to test whether loyalty creates incremental value. Assumed uplift is not a measured causal effect.';roiv.insertBefore(rh,document.getElementById('kpi-roi'));
+redraw();
+})();
+</script>
+
+<style>
+.link-bridge{margin:18px 0 22px;padding:22px;border:1px solid #dce5ed;border-radius:16px;background:linear-gradient(115deg,#fff,#f3f8fb);box-shadow:0 5px 18px #16364d0a}.link-bridge h3{font-size:20px;margin:0 0 7px;color:#173e66}.link-bridge p{color:#607488;font-size:13px;line-height:1.6;margin:0 0 16px}.link-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.link-card{padding:15px;border:1px solid #e2e9f0;border-radius:12px;background:white}.link-card small{display:block;color:#65778a;font-size:12px}.link-card strong{display:block;font-size:23px;color:#183b5b;margin:6px 0}.link-card span{font-size:11px;color:#697e90}.link-toggle{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:#183b5b;padding:12px 0}.link-toggle input{width:19px;height:19px;accent-color:#17775e}.link-explainer{padding:12px;border-radius:10px;background:#eaf3f8;font-size:12px;color:#36576d;margin-top:12px}.link-explainer b{color:#173e66}@media(max-width:700px){.link-cards{grid-template-columns:1fr}}
+</style>
+<script>
+(function(){
+ const f=document.getElementById('view-financial'),r=document.getElementById('view-roi');
+ const bridge=document.createElement('section');bridge.className='link-bridge';bridge.innerHTML=`<h3>Reward fulfillment cost → Commercial ROI</h3><p>See the actual modeled reward fulfillment expense from the financial roll-forward and compare it with the contribution needed to cover the loyalty program. Accounting revenue released is <b>not</b> counted as incremental sales.</p><div class="link-cards"><div class="link-card"><small>Annual revenue released</small><strong id="linked-release">—</strong><span>Liability recognized after fulfillment</span></div><div class="link-card"><small>Annual reward fulfillment cost</small><strong id="linked-cost">—</strong><span>Economic cost modeled in Financial Impact</span></div><div class="link-card"><small>Required incremental spending</small><strong id="linked-break">—</strong><span>At ROI tab's assumed 30% margin; reward cost only</span></div></div><div class="link-explainer">The required spending here is a <b>reward-cost-only</b> break-even illustration. ROI also includes administration and campaigns. The accounting and ROI populations can differ.</div>`;
+ const anchor=f.querySelector('.panel');if(anchor)anchor.before(bridge);else f.append(bridge);
+ const link=document.createElement('div');link.className='link-bridge';link.innerHTML=`<h3>Connect financial costs to ROI</h3><label class="link-toggle"><input type="checkbox" id="link-roi-cost"> Use annual reward fulfillment cost from Financial Impact</label><p>Off: ROI uses the editable benefit cost per guest. On: it uses the <b>full-year modeled reward fulfillment cost</b> from Financial Impact, plus ROI administration and campaign costs. This is a sensitivity scenario, not a verified population match.</p><div class="link-explainer" id="link-status">Independent ROI assumptions selected.</div>`;
+ const roiControls=r.querySelector('#roiControls');if(roiControls){roiControls.closest('.panel').before(link)}else r.append(link);
+ const checkbox=document.getElementById('link-roi-cost');checkbox.addEventListener('change',()=>{document.dispatchEvent(new CustomEvent('loyalty-link-toggle',{detail:checkbox.checked}));updateBridge()});
+ const fmt=n=>'$'+(n/1e6).toFixed(2)+'M';
+ function updateBridge(){const v=calculate(state);document.getElementById('linked-release').textContent=fmt(v.recognizedTotal);document.getElementById('linked-cost').textContent=fmt(v.costTotal);const margin=Number(document.getElementById('roi-margin')?.value||30)/100;document.getElementById('linked-break').textContent=fmt(v.costTotal/margin);document.getElementById('link-status').textContent=checkbox.checked?'Linked: ROI uses '+fmt(v.costTotal)+' annual reward fulfillment costs from the financial model.':'Independent ROI assumptions selected.';document.dispatchEvent(new Event('loyalty-financial-updated'))}
+ const previous=render;render=function(){previous();updateBridge()};updateBridge();
+ document.getElementById('roi-margin')?.addEventListener('input',updateBridge);
+})();
+</script>
+</body></html>
